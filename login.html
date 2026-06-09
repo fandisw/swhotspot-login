@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title">SW-HOTSPOT</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="tabbar.css">
+    <link rel="icon" href="logo.jpg" />
+</head>
+
+<script>
+    var error = "$(error)";
+    if ((error == "user $(username) has reached uptime limit") || (error == "kode voucher/user $(username) sudah mencapai batas waktu")) {
+        window.location.href = "./expired.html";
+    }
+</script>
+<body>
+    $(if chap-id)</body>
+    <form name="sendin" action="$(link-login-only)" method="post">
+        <input type="hidden" name="username" />
+        <input type="hidden" name="password" />
+        <input type="hidden" name="dst" value="$(link-orig)" />
+        <input type="hidden" name="popup" value="true" />
+    </form>
+
+    <script type="text/javascript" src="md5.js"></script>
+    <script type="text/javascript">
+        function doLogin() {
+            document.sendin.username.value = document.login.username.value;
+            document.sendin.password.value = hexMD5('$(chap-id)' + document.login.password.value +
+                '$(chap-challenge)');
+            document.sendin.submit();
+            return false;
+        }
+    </script>
+    $(endif)
+
+    <!-- AUDIO MUSIK BACKGROUND -->
+    <audio id="bgm" loop preload="auto">
+        <source src="musik.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container-login">
+        <div class="dot"></div>
+        <div class="dot two"></div>
+        <div class="dot three"></div>
+        <div class="line"></div>
+
+        <div class="logo">
+            <img src="assets/logo.jpg" alt="">
+        </div>
+
+        <!-- box info login - TEKS MUNCUL HILANG -->
+        <div class="box" id="infologin">
+            <div class="fade-text">CUKUP SCAN QRIS DENGAN EWALET ATAU KE BRI LINK TERDEKAT.</div>
+        </div>
+
+        <!-- BOX DALAM POLOS -->
+        <div class="main-box-glow">
+            <form class="custom-fields" name="login" autocomplete="off" action="$(link-login-only)" method="post" $(if chap-id) onSubmit="return doLogin()" $(endif)>
+                <input type="hidden" name="dst" value="$(link-orig)" />
+                <input type="hidden" name="popup" value="true" />
+
+                <!-- INPUT VOUCHER PANJANG PENDEK -->
+                <div class="username-field">
+                    <input type="text" name="username" class="username-input" placeholder="" value="$(username)" />
+                </div>
+
+                <div class="password-field">
+                    <input name="password" placeholder="" class="password-input" type="hidden" />
+                </div>
+
+                <!-- TOMBOL LOGIN KECIL -->
+                <button class="btn-small" type="submit"><a>LOGIN</a></button>
+            </form>
+
+            <!-- TOMBOL INFO KECIL -->
+            <button class="btn-small" onclick="window.location='info.html';"><a>BELI VOUCHER</a></button>
+
+            $(if error)<div class="notice">$(error)</div>$(endif)
+
+            <!-- TOMBOL VOUCHER/MEMBER KECIL -->
+            <div class="btn-container">
+                <button class="btn-small btno" onclick="voucher();"><a>VOUCHER</a></button>
+                <button class="btn-small btno" onclick="member();"><a>MEMBER</a></button>
+            </div>
+        </div>
+
+        <div class="copy">
+            &copy;FANDI SW <script>document.write(new Date().getFullYear())</script>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var hostname = window.location.hostname;
+        document.getElementById('title').innerHTML = hostname + " > login";
+
+        document.login.username.focus();
+
+        var infologin = document.getElementById('infologin');
+        infologin.innerHTML = '<div class="fade-text">KODE VOUCHER BISA ANDA BELI DARI HALAMAN INI TANPA RIBET LIHAT CARANYA KLIK BELI VOUCHER</div>';
+
+        var username = document.login.username;
+        var password = document.login.password;
+
+        // ANIMASI PETUNJUK LEBIH PELAN - VOUCHER & MEMBER
+        const hintsUserVoucher = ["KETIK KODE VOUCHER...", "KEMUDIAN KLIK LOGIN...", "KETIK KODE VOUCHER..."];
+        const hintsUserMember = ["MASUKAN USERNAME...", "KEMUDIAN KLIK LOGIN...", "MASUKAN USERNAME..."];
+        const hintsPass = ["MASUKAN PASSWORD...", "KEMUDIAN KLIK LOGIN...", "MASUKAN PASSWORD..."];
+        let hintIndex = 0;
+        let charIndex = 0;
+        let deleting = false;
+        let isVoucher = true;
+        const speed = 180;
+        const pause = 2500;
+        let animTimeout;
+
+        function typeHint() {
+            clearTimeout(animTimeout);
+
+            if(isVoucher) {
+                if(username.value.length > 0) {
+                    animTimeout = setTimeout(typeHint, 300);
+                    return;
+                }
+                const currentHint = hintsUserVoucher[hintIndex];
+                if(!deleting) {
+                    username.placeholder = currentHint.substring(0, charIndex + 1);
+                    charIndex++;
+                    if(charIndex === currentHint.length) {
+                        deleting = true;
+                        animTimeout = setTimeout(typeHint, pause);
+                        return;
+                    }
+                } else {
+                    username.placeholder = currentHint.substring(0, charIndex - 1);
+                    charIndex--;
+                    if(charIndex === 0) {
+                        deleting = false;
+                        hintIndex = (hintIndex + 1) % hintsUserVoucher.length;
+                    }
+                }
+                animTimeout = setTimeout(typeHint, deleting? 90 : speed);
+            } else {
+                // MODE MEMBER - USERNAME + PASSWORD ANIMASI
+                if(username.value.length > 0 && password.value.length > 0) {
+                    animTimeout = setTimeout(typeHint, 300);
+                    return;
+                }
+
+                const currentHintUser = hintsUserMember[hintIndex];
+                const currentHintPass = hintsPass[hintIndex];
+
+                if(!deleting) {
+                    username.placeholder = currentHintUser.substring(0, charIndex + 1);
+                    password.placeholder = currentHintPass.substring(0, charIndex + 1);
+                    charIndex++;
+                    if(charIndex === currentHintUser.length) {
+                        deleting = true;
+                        animTimeout = setTimeout(typeHint, pause);
+                        return;
+                    }
+                } else {
+                    username.placeholder = currentHintUser.substring(0, charIndex - 1);
+                    password.placeholder = currentHintPass.substring(0, charIndex - 1);
+                    charIndex--;
+                    if(charIndex === 0) {
+                        deleting = false;
+                        hintIndex = (hintIndex + 1) % hintsUserMember.length;
+                    }
+                }
+                animTimeout = setTimeout(typeHint, deleting? 90 : speed);
+            }
+        }
+        setTimeout(typeHint, 1000);
+
+        function setpass() {
+            var user = username.value
+            username.value = user;
+            password.value = user;
+        }
+
+        username.onkeyup = setpass;
+
+        function voucher() {
+            isVoucher = true;
+            hintIndex = 0;
+            charIndex = 0;
+            deleting = false;
+            username.focus();
+            username.onkeyup = setpass;
+            username.type = "text";
+            username.placeholder = "";
+            password.type = "hidden";
+            password.value = "";
+            password.placeholder = "";
+            infologin.innerHTML = '<div class="fade-text">UNTUK INFO LENGKAP  KLIK TOMBOL BELI VOUCHER DI BAWAH</div>';
+            setTimeout(typeHint, 500);
+        }
+
+        function member() {
+            isVoucher = false;
+            hintIndex = 0;
+            charIndex = 0;
+            deleting = false;
+            username.focus();
+            username.onkeyup = "";
+            username.type = "text";
+            username.placeholder = "";
+            password.type = "password";
+            password.placeholder = "";
+            infologin.innerHTML = '<div class="fade-text"> MENYESUAIKAN KEMAJUAN TEKNOLOGI BERSAMA PELANGGAN DEMI MASA DEPAN YANG LEBIH BAIK</div>';
+            setTimeout(typeHint, 500);
+        }
+
+        const bgm = document.getElementById('bgm');
+        bgm.volume = 0.25;
+        let udahMuter = false;
+
+        username.addEventListener('input', function() {
+            if(!udahMuter && username.value.length > 0) {
+                bgm.play().catch((e) => console.log('Audio blocked:', e));
+                udahMuter = true;
+            }
+        }, {once: true});
+    </script>
+    <style>
+ .container-login {
+        position: relative;
+        max-width: 420px;
+        margin: 20px auto;
+        padding: 25px 20px;
+        border-radius: 20px;
+        background: rgba(10, 14, 26, 0.7);
+        backdrop-filter: blur(10px);
+        border: 2px solid #0096ff;
+        box-shadow: 0 0 15px #0096ff, 0 0 30px #0066ff, 0 0 60px rgba(0, 150, 255, 0.5);
+        animation: borderGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes borderGlow {
+        0%, 100% {
+            border-color: #0096ff;
+            box-shadow: : 0 0 15px #0096ff, 0 0 30px #0066ff, 0 0 60px rgba(0, 150, 255, 0.5);
+        }
+        50% {
+            border-color: #00aaff;
+            box-shadow: 0 0 25px #00aaff, 0 0 50px #0088ff, 0 0 80px rgba(0, 170, 255, 0.7);
+        }
+    }
+
+ .main-box-glow {
+        border: none;
+        box-shadow: none;
+        background: transparent;
+        padding: 0;
+        margin-top: 15px;
+        animation: none;
+    }
+
+ .logo {
+        position: relative;
+        width: 160px;
+        height: 160px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: logoBlink 2s ease-in-out infinite;
+    }
+
+ .logo::before {
+        content: '';
+        position: absolute;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 3px solid #0096ff;
+        box-shadow: 0 0 20px #0096ff, 0 0 40px #0066ff;
+        animation: logoBlink 2s ease-in-out infinite;
+        z-index: 0;
+    }
+
+ .logo::after {
+        content: '';
+        position: absolute;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 2px solid rgba(0, 150, 255, 0.5);
+        box-shadow: 0 0 15px rgba(0, 150, 255, 0.4);
+        animation: logoBlink 2s ease-in-out infinite;
+        z-index: 0;
+        filter: blur(1px);
+    }
+
+ .logo img {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        z-index: 1;
+        border: 2px solid rgba(0, 150, 255, 0.3);
+        box-shadow: 0 0 25px rgba(0, 150, 255, 0.4),
+                    inset 0 0 15px rgba(0, 150, 255, 0.1);
+        background: rgba(0, 30, 77, 0.3);
+        backdrop-filter: blur(8px);
+        animation: logoBlink 2s ease-in-out infinite;
+    }
+
+    @keyframes logoBlink {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.05); }
+    }
+
+ .fade-text {
+        color: #00aaff;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+        letter-spacing: 0.5px;
+        text-shadow: 0 0 8px rgba(0, 170, 255, 0.6);
+        animation: fadeBlink 3s ease-in-out infinite;
+        margin-bottom: 10px;
+    }
+
+    @keyframes fadeBlink {
+        0%, 100% { opacity: 0; transform: scale(0.95); }
+        20%, 80% { opacity: 1; transform: scale(1); }
+    }
+
+ .username-field {
+        margin: 12px auto 14px;
+        width: 88%;
+        max-width: 320px;
+    }
+
+ .password-field {
+        margin: 12px auto 14px;
+        width: 88%;
+        max-width: 320px;
+    }
+
+ .username-input,.password-input {
+        width: 100%;
+        padding: 6px 14px;
+        height: 34px;
+        background: rgba(0, 30, 77, 0.6);
+        border: 2px solid #0096ff;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        outline: none;
+        text-align: center;
+        letter-spacing: 2px;
+        box-shadow:
+            0 0 6px rgba(0, 150, 255, 0.4),
+            inset 0 0 6px rgba(0, 150, 255, 0.1);
+        transition: all 0.3s;
+    }
+
+ .username-input:focus,.password-input:focus {
+        border-color: #00aaff;
+        background: rgba(0, 40, 100, 0.8);
+        box-shadow:
+            0 0 12px rgba(0, 170, 255, 0.8),
+            0 0 24px rgba(0, 150, 255, 0.6),
+            inset 0 0 10px rgba(0, 150, 255, 0.2);
+        transform: scale(1.01);
+    }
+
+ .username-input::placeholder,.password-input::placeholder {
+        color: rgba(0, 170, 255, 0.8);
+        font-weight: 500;
+        font-size: 11px;
+        letter-spacing: 1px;
+        animation: blinkCursor 1.2s step-end infinite;
+    }
+
+    @keyframes blinkCursor {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0; }
+    }
+
+ .btn-small {
+        display: block;
+        width: 60%;
+        margin: 15px auto;
+        text-align: center;
+        background: linear-gradient(135deg, rgba(0, 150, 255, 0.15), rgba(0, 150, 255, 0.15));
+        color: #00aaff;
+        padding: 12px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 13px;
+        border: 1px solid #0096ff;
+        box-shadow: 0 0 10px rgba(0, 150, 255, 0.3);
+        transition: all 0.3s;
+        cursor: pointer;
+        letter-spacing: 0.5px;
+    }
+ .btn-small:hover {
+        background: rgba(0, 150, 255, 0.3);
+        box-shadow: 0 0 20px rgba(0, 170, 255, 0.6);
+        transform: translateY(-2px);
+    }
+ .btn-small a {
+        color: #00aaff;
+        text-decoration: none;
+    }
+
+ .btn-container {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 5px;
+    }
+ .btno {
+        width: 48%!important;
+        margin: 0!important;
+    }
+
+ .notice {
+        background: rgba(255, 0, 0, 0.1);
+        border: 1px solid rgba(255, 0, 0, 0.3);
+        color: #ff6666;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 11px;
+        margin: 10px 0;
+    }
+
+ .copy {
+        text-align: center;
+        margin-top: 20px;
+        color: : #666;
+        font-size: 10px;
+    }
+
+ .btn,.btnq { display: none; }
+ .top,.right,.bottom,.left { display: none; }
+ .dot,.line { display: none; }
+</style>
+</body>
+</html>

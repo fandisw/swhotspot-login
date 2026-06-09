@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trial 15 Menit - SW-HOTSPOT</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" />
+</head>
+<body>
+    <!-- AUDIO BACKGROUND -->
+    <audio id="bgm" loop preload="auto">
+        <source src="musik.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container-login">
+        <div class="dot"></div>
+        <div class="dot two"></div>
+        <div class="dot three"></div>
+        <div class="line"></div>
+        
+        <!-- LOGO DIHAPUS -->
+
+        <!-- TEKS MUNCUL HILANG -->
+        <div class="box" id="infologin">
+            <div class="fade-text">TRIAL GRATIS 15 MENIT</div>
+        </div>
+        
+        <div class="main-box-glow">
+            <div class="container-trial">
+                <div class="trial-desc">
+                    Internet gratis buat beli voucher & kontak admin. 1 device cuma bisa 1x trial per hari.
+                </div>
+
+                <!-- TOMBOL TRIAL MIKROTIK ASLI -->
+                $(if trial == 'yes')
+                <a class="btn-trial" href="$(link-login-only)?dst=$(link-orig-esc)&username=T-$(mac-esc)" id="playBtn">
+                    AKTIFKAN TRIAL
+                </a>
+                $(else)
+                <button class="btn-trial" disabled>
+                    TRIAL TIDAK TERSEDIA
+                </button>
+                <div class="warning">Fitur trial sudah terpakai hari ini</div>
+                $(endif)
+
+                <div class="warning">
+                    * Setelah 15 menit otomatis putus. Segera beli voucher!
+                </div>
+
+                <button class="btn-small" onclick="window.location='login.html';">
+                    <a>LOGIN VOUCHER</a>
+                </button>
+            </div>
+        </div>
+
+        <div class="copy">
+            &copy; FANDI SW <script>document.write(new Date().getFullYear())</script>
+        </div>
+    </div>
+
+    $(if error)<div class="notice">$(error)</div>$(endif)
+
+    <script>
+    // PLAY MUSIK PAS KLIK TOMBOL TRIAL
+    const bgm = document.getElementById('bgm');
+    bgm.volume = 0.25;
+    
+    const playBtn = document.getElementById('playBtn');
+    if(playBtn) {
+        playBtn.addEventListener('click', function() {
+            bgm.play().catch(e => console.log('Audio blocked:', e));
+        });
+    }
+    </script>
+
+    <style>
+    /* KOTAK LUAR - GLOW BIRU SERAGAM 2 DETIK */
+    .container-login {
+        position: relative;
+        max-width: 420px;
+        margin: 20px auto;
+        padding: 25px 20px;
+        border-radius: 20px;
+        background: rgba(10, 14, 26, 0.7);
+        backdrop-filter: blur(10px);
+        border: 2px solid #0096ff;
+        box-shadow: 0 0 15px #0096ff, 0 0 30px #0066ff, 0 0 60px rgba(0, 150, 255, 0.5);
+        animation: borderGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes borderGlow {
+        0%, 100% { 
+            border-color: #0096ff;
+            box-shadow: 0 0 15px #0096ff, 0 0 30px #0066ff, 0 0 60px rgba(0, 150, 255, 0.5);
+        }
+        50% { 
+            border-color: #00aaff;
+            box-shadow: 0 0 25px #00aaff, 0 0 50px #0088ff, 0 0 80px rgba(0, 170, 255, 0.7);
+        }
+    }
+
+    /* BOX DALAM POLOS */
+    .main-box-glow {
+        border: none;
+        box-shadow: none;
+        background: transparent;
+        padding: 0;
+        margin-top: 15px;
+        animation: none;
+    }
+
+    /* LOGO CSS DIHAPUS SEMUA */
+
+    /* TEKS MUNCUL HILANG - MARGIN ATAS DISESUAIKAN */
+    .fade-text {
+        color: #00aaff;
+        font-size: 16px;
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: 0.5px;
+        text-shadow: 0 0 8px rgba(0, 170, 255, 0.6);
+        margin-top: 10px;
+        margin-bottom: 20px;
+        animation: fadeBlink 3s ease-in-out infinite;
+    }
+
+    @keyframes fadeBlink {
+        0%, 100% { opacity: 0; transform: scale(0.95); }
+        20%, 80% { opacity: 1; transform: scale(1); }
+    }
+
+    .container-trial {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .trial-desc {
+        color: #c0c0c0;
+        font-size: 12px;
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    /* TOMBOL TRIAL SERAGAM BIRU */
+    .btn-trial {
+        width: 100%;
+        padding: 14px;
+        background: rgba(0, 150, 255, 0.15);
+        border: 2px solid #0096ff;
+        border-radius: 12px;
+        color: #00aaff;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-bottom: 15px;
+        text-decoration: none;
+        display: block;
+        box-shadow: 0 0 10px rgba(0, 150, 255, 0.3);
+    }
+    .btn-trial:hover {
+        background: rgba(0, 150, 255, 0.3);
+        box-shadow: 0 0 20px rgba(0, 170, 255, 0.6);
+        transform: translateY(-2px);
+    }
+    .btn-trial:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .warning {
+        font-size: 11px;
+        color: #ff6666;
+        margin: 12px 0;
+        line-height: 1.4;
+        background: rgba(255, 0, 0, 0.1);
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 0, 0, 0.3);
+    }
+
+    /* TOMBOL KECIL SERAGAM */
+    .btn-small {
+        display: block;
+        width: 60%;
+        margin: 15px auto 0;
+        text-align: center;
+        background: rgba(0, 150, 255, 0.15);
+        color: #00aaff;
+        padding: 12px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 13px;
+        border: 1px solid #0096ff;
+        box-shadow: 0 0 10px rgba(0, 150, 255, 0.3);
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    .btn-small:hover { 
+        background: rgba(0, 150, 255, 0.3);
+        box-shadow: 0 0 20px rgba(0, 170, 255, 0.6);
+        transform: translateY(-2px);
+    }
+    .btn-small a { color: #00aaff; text-decoration: none; }
+
+    .copy {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+        font-size: 10px;
+    }
+
+    .notice {
+        background: rgba(255, 0, 0, 0.1);
+        border: 1px solid rgba(255, 0, 0, 0.3);
+        color: #ff6666;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 11px;
+        margin: 10px 0;
+    }
+
+    .dot, .line { display: none; }
+    </style>
+</body>
+</html>
